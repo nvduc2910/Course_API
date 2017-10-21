@@ -1,0 +1,22 @@
+﻿<Properties StartupConfiguration="{F0C7C302-5275-4121-AA01-11658E47C8B7}|Default">
+  <MonoDevelop.Ide.Workbench ActiveDocument="VF/CustomAttribute/HandleExceptionAttribute.cs">
+    <Files>
+      <File FileName="VF/Controllers/InstituteController.cs" Line="30" Column="2" />
+      <File FileName="VF/Controllers/AccountController.cs" Line="140" Column="118" />
+      <File FileName="VF/Models/DatabaseModels/InstitudeModels/InstitudeFlag.cs" Line="7" Column="27" />
+      <File FileName="VF/Models/DatabaseModels/InstitudeModels/Institute.cs" Line="43" Column="18" />
+      <File FileName="VF/Controllers/EntryDataController.cs" Line="110" Column="35" />
+      <File FileName="VF/CustomAttribute/HandleExceptionAttribute.cs" Line="34" Column="17" />
+    </Files>
+  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore>
+      <Breakpoint file="/Users/apple/Documents/Freelancer Projects/Backend/Course_API/Course_API/VF/Controllers/AccountController.cs" relfile="VF/Controllers/AccountController.cs" line="247" column="23" />
+      <Breakpoint file="/Users/apple/Documents/Freelancer Projects/Backend/Course_API/Course_API/VF/Controllers/AccountController.cs" relfile="VF/Controllers/AccountController.cs" line="241" column="1" />
+    </BreakpointStore>
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+  <MultiItemStartupConfigurations />
+  <MonoDevelop.Ide.ItemProperties.Course__API PreferredExecutionTarget="MonoDevelop.Default" />
+</Properties>
