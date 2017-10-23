@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#F2F2F2">
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:background="#E23A6E"
+        android:text="Enjoy with special discount when you book via App"
+        android:gravity="center"
+        android:textColor="#ffffff"
+        android:textSize="14sp"/>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <TextView
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:text="Featured Courses"
+            android:textSize="16sp"
+            android:textColor="#E23A6E"
+            android:layout_marginLeft="15dp"
+            android:layout_marginTop="20dp"/>
+        <ImageView
+            android:layout_width="45dp"
+            android:layout_height="45dp"
+            android:src="@drawable/ic_filter"
+            android:padding="12dp"
+            android:layout_marginRight="15dp"/>
+    </LinearLayout>
+    <ListView
+        android:id="@+id/lvCourse"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:divider="@null"
+        android:layout_marginRight="15dp"
+        android:layout_marginLeft="15dp"></ListView>
+
+
+</LinearLayout>

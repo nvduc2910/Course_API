@@ -1,6 +1,0 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<parameters>
-  <parameter name="IIS Web Application Name" description="" value="nownbackend" tags="IisApp">
-    <parameterEntry kind="ProviderPath" scope="IisApp" match="^/Users/apple/Documents/Freelancer\ Projects/Backend/Course_API/Course_API/VF/obj/Release/netcoreapp1\.1/PubTmp/Out/$" />
-  </parameter>
-</parameters>
