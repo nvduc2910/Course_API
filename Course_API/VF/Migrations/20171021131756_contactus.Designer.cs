@@ -9,9 +9,10 @@ using Course_API.Enums;
 namespace Course_API.Migrations
 {
     [DbContext(typeof(VfDbContext))]
-    partial class VfDbContextModelSnapshot : ModelSnapshot
+    [Migration("20171021131756_contactus")]
+    partial class contactus
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
             modelBuilder
                 .HasAnnotation("ProductVersion", "1.1.1")
@@ -752,8 +753,6 @@ namespace Course_API.Migrations
                     b.Property<double>("Lng");
 
                     b.Property<string>("Logo");
-
-                    b.Property<string>("Major");
 
                     b.Property<string>("Name");
 

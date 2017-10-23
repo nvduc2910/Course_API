@@ -4,6 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Course_API.Enums;
 using Course_API.Models.TrainerModels;
+using Course_API.Models.DatabaseModels;
 
 namespace Course_API.Models
 {
@@ -32,5 +33,7 @@ namespace Course_API.Models
         public int PinCode { get; set; }
         public DateTime? PinCodeExpiration { get; set; }
         public string DeviceToken {get;set;}
+
+        public virtual ICollection<Favorite> CourseFavorite { get; set; }
     }
 }

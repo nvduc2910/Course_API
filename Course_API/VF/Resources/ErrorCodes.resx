@@ -138,4 +138,13 @@
   <data name="ValidationError" xml:space="preserve">
     <value>1111</value>
   </data>
+    <data name="ProductNotFound" xml:space="preserve">
+    <value>4005</value>
+  </data>
+
+    <data name="TrainerNotFound" xml:space="preserve">
+    <value>4006</value>
+  </data>
+
+	
 </root>

@@ -133,5 +133,7 @@ namespace Course_API.Models
 
 
         public virtual ICollection<CourseDayType> CourseDayType { get; set; }
+
+        public virtual ICollection<Favorite> CourseFavorite { get; set; }
     }
 }

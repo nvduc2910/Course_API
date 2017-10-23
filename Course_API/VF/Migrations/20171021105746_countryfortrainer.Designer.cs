@@ -9,9 +9,10 @@ using Course_API.Enums;
 namespace Course_API.Migrations
 {
     [DbContext(typeof(VfDbContext))]
-    partial class VfDbContextModelSnapshot : ModelSnapshot
+    [Migration("20171021105746_countryfortrainer")]
+    partial class countryfortrainer
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
             modelBuilder
                 .HasAnnotation("ProductVersion", "1.1.1")
@@ -280,44 +281,22 @@ namespace Course_API.Migrations
                     b.ToTable("Currency");
                 });
 
-            modelBuilder.Entity("Course_API.Models.DatabaseModels.ContactUs", b =>
+            modelBuilder.Entity("Course_API.Models.DatabaseModels.CourseFavorite", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<string>("About");
+                    b.Property<int>("CourseId");
 
-                    b.Property<string>("ApplicationName");
-
-                    b.Property<string>("CompanyName");
-
-                    b.Property<string>("ContactNumber");
-
-                    b.Property<string>("Email");
-
-                    b.Property<string>("Facebook");
-
-                    b.Property<string>("GooglePlus");
-
-                    b.Property<string>("Instagram");
-
-                    b.Property<string>("Remark");
-
-                    b.Property<string>("Snapchat");
-
-                    b.Property<string>("Telegram");
-
-                    b.Property<string>("Twitter");
-
-                    b.Property<string>("Website");
-
-                    b.Property<string>("Welcome");
-
-                    b.Property<string>("Youtube");
+                    b.Property<int>("TraineeId");
 
                     b.HasKey("Id");
 
-                    b.ToTable("ContactUs");
+                    b.HasIndex("CourseId");
+
+                    b.HasIndex("TraineeId");
+
+                    b.ToTable("CourseFavorite");
                 });
 
             modelBuilder.Entity("Course_API.Models.DatabaseModels.CourseModels.CourseScope", b =>
@@ -342,34 +321,6 @@ namespace Course_API.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("DayType");
-                });
-
-            modelBuilder.Entity("Course_API.Models.DatabaseModels.Favorite", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<int>("CityId");
-
-                    b.Property<int>("CountryId");
-
-                    b.Property<int?>("CourseId");
-
-                    b.Property<int>("CourseTypeId");
-
-                    b.Property<int>("InstituteId");
-
-                    b.Property<DateTime>("SelectTime");
-
-                    b.Property<int>("TraineeId");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CourseId");
-
-                    b.HasIndex("TraineeId");
-
-                    b.ToTable("Favorite");
                 });
 
             modelBuilder.Entity("Course_API.Models.DatabaseModels.RelianceModels.Reliance", b =>
@@ -753,8 +704,6 @@ namespace Course_API.Migrations
 
                     b.Property<string>("Logo");
 
-                    b.Property<string>("Major");
-
                     b.Property<string>("Name");
 
                     b.Property<string>("Remark");
@@ -995,7 +944,7 @@ namespace Course_API.Migrations
                         .HasForeignKey("DayTypeId");
 
                     b.HasOne("Course_API.Models.Institute", "Institude")
-                        .WithMany("Course")
+                        .WithMany()
                         .HasForeignKey("InstituteId")
                         .OnDelete(DeleteBehavior.Cascade);
 
@@ -1005,13 +954,14 @@ namespace Course_API.Migrations
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
-            modelBuilder.Entity("Course_API.Models.DatabaseModels.Favorite", b =>
+            modelBuilder.Entity("Course_API.Models.DatabaseModels.CourseFavorite", b =>
                 {
-                    b.HasOne("Course_API.Models.Course")
+                    b.HasOne("Course_API.Models.Course", "Course")
                         .WithMany("CourseFavorite")
-                        .HasForeignKey("CourseId");
+                        .HasForeignKey("CourseId")
+                        .OnDelete(DeleteBehavior.Cascade);
 
-                    b.HasOne("Course_API.Models.Trainee")
+                    b.HasOne("Course_API.Models.Trainee", "Trainee")
                         .WithMany("CourseFavorite")
                         .HasForeignKey("TraineeId")
                         .OnDelete(DeleteBehavior.Cascade);

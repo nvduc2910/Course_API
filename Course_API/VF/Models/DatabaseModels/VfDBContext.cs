@@ -8,6 +8,7 @@ using Course_API.Models.DatabaseModels.CourseModels;
 using Course_API.Models.DatabaseModels.RelianceModels;
 using Course_API.Models.DatabaseModels.RelModels;
 using Course_API.Models.TrainerModels;
+using Course_API.Models.DatabaseModels;
 
 namespace Course_API.Models
 {
@@ -88,6 +89,8 @@ namespace Course_API.Models
         public DbSet<TrainerFlag> TrainerFlag { get; set; }
         public DbSet<TrainerStatus> TrainerStatus { get; set; }
         public DbSet<TrainerTitle> TrainerTitle { get; set; }
+
+        public DbSet<ContactUs> ContactUs { get; set; }
 
     }
 }

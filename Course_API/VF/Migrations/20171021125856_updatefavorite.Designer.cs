@@ -9,9 +9,10 @@ using Course_API.Enums;
 namespace Course_API.Migrations
 {
     [DbContext(typeof(VfDbContext))]
-    partial class VfDbContextModelSnapshot : ModelSnapshot
+    [Migration("20171021125856_updatefavorite")]
+    partial class updatefavorite
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
             modelBuilder
                 .HasAnnotation("ProductVersion", "1.1.1")
@@ -278,46 +279,6 @@ namespace Course_API.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Currency");
-                });
-
-            modelBuilder.Entity("Course_API.Models.DatabaseModels.ContactUs", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<string>("About");
-
-                    b.Property<string>("ApplicationName");
-
-                    b.Property<string>("CompanyName");
-
-                    b.Property<string>("ContactNumber");
-
-                    b.Property<string>("Email");
-
-                    b.Property<string>("Facebook");
-
-                    b.Property<string>("GooglePlus");
-
-                    b.Property<string>("Instagram");
-
-                    b.Property<string>("Remark");
-
-                    b.Property<string>("Snapchat");
-
-                    b.Property<string>("Telegram");
-
-                    b.Property<string>("Twitter");
-
-                    b.Property<string>("Website");
-
-                    b.Property<string>("Welcome");
-
-                    b.Property<string>("Youtube");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("ContactUs");
                 });
 
             modelBuilder.Entity("Course_API.Models.DatabaseModels.CourseModels.CourseScope", b =>
@@ -752,8 +713,6 @@ namespace Course_API.Migrations
                     b.Property<double>("Lng");
 
                     b.Property<string>("Logo");
-
-                    b.Property<string>("Major");
 
                     b.Property<string>("Name");
 

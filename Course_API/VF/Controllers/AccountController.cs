@@ -19,9 +19,10 @@ using System;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Localization;
 using Course_API.Enums;
-using Course_API.Models.BindingModels.AuthenticationModels;
 using System.Collections.Generic;
 using Course_API.Models.ReturnModels;
+using Course_API.Models.BindingModels.AuthenticationBindModels;
+using Course_API.Models.ReturnModels.TraineeReturnModels;
 
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -98,9 +99,9 @@ namespace Course_API.Controllers
         /// <param name="registerModel"></param>
         /// <returns></returns>
         [HttpPost]
-        public async Task<IActionResult> Register([FromBody] PersonalAccountRegisterBindModel personalModel)
+        public async Task<IActionResult> Register([FromBody] TraineeRegisterBindModel personalModel)
         {
-            Trainee user = await Register(personalModel.PhoneNumber, personalModel.Password,  personalModel.CountryId, personalModel.CityId, personalModel.Sex);
+            Trainee user = await Register(personalModel.PhoneNumber, personalModel.Password,  personalModel.CountryId, personalModel.CityId, personalModel.Sex, personalModel.Email);
 
             if (user == null)
 
@@ -176,7 +177,7 @@ namespace Course_API.Controllers
         }
        
 
-        [HttpPost]
+        [HttpGet]
         public async Task<IActionResult> GetCountry()
         {
             var countrylst = new List<CountryReturnModel>();
@@ -216,9 +217,48 @@ namespace Course_API.Controllers
             return ApiResponder.RespondSuccessTo(HttpStatusCode.Ok, citylst);
         }
 
+
+        [HttpGet]
+        public IActionResult GetProfile()
+        {
+            var userId = Convert.ToInt32(userManager.GetUserId(User));
+
+            var userProfile = unitOfWork.GetRepository<Trainee>().Get(s => s.Id == userId, null, "Country,City").FirstOrDefault();
+
+            var userProfileReturn = new TraineeReturnModel()
+            {
+                Id = userProfile.Id,
+                Name = userProfile.Name,
+                Country = userProfile.Country.Name,
+                City = userProfile.City.Name,
+                PhoneNumber = userProfile.UserName,
+                Email = userProfile.Email,
+            };
+
+            return ApiResponder.RespondSuccessTo(HttpStatusCode.Ok, userProfileReturn);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> UpdateProfile([FromBody]TraineeUpdateProfileBindModel traineeProfile)
+        {
+            var userId = Convert.ToInt32(userManager.GetUserId(User));
+
+            var userProfile = unitOfWork.GetRepository<Trainee>().Get(s => s.Id == userId, null, "Country,City").FirstOrDefault();
+
+            userProfile.UserName = traineeProfile.PhoneNumber;
+            userProfile.Name = traineeProfile.Name;
+            userProfile.Email = traineeProfile.Email;
+            userProfile.CountryId = traineeProfile.CountryId;
+            userProfile.CityId = traineeProfile.CityId;
+
+            await unitOfWork.GetRepository<Trainee>().UpdateAsync(userProfile);
+
+            return ApiResponder.RespondSuccessTo(HttpStatusCode.Ok, "Updated");
+        }
+
         #region Mehods
         [NonAction]
-        private async Task<Trainee> Register(string phonenumber, string password, int countryId, int cityId, string sex)
+        private async Task<Trainee> Register(string phonenumber, string password, int countryId, int cityId, string sex, string email)
         {
             try
             {
@@ -230,6 +270,7 @@ namespace Course_API.Controllers
                     CityId = cityId,
                     Gender = sex,
                     ActiveStatusId = 2,
+                    Email = email,
                         
                 };
 

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Runtime.Serialization;
 using Newtonsoft.Json;
 
@@ -51,6 +52,7 @@ namespace Course_API.Models
         [IgnoreDataMember]
         public InstitudeFlag InstitudeFlag { get; set; }
 
+        public virtual ICollection<Course> Course { get; set; }
 
     }
 }

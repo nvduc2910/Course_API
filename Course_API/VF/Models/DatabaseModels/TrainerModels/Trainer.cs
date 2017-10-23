@@ -13,6 +13,8 @@ namespace Course_API.Models.TrainerModels
         public string Name { get; set; }
         public ECourseGender Gender { get; set; }
         public int TrainerNationalityId { get; set; }
+        public int? CountryId { get; set; }
+        public int? CityId { get; set; }
         public string About { get; set; }
         public string ContactNumber { get; set; }
         public string Email { get; set; }
@@ -24,6 +26,7 @@ namespace Course_API.Models.TrainerModels
         public string Snapchat { get; set; }
         public string Youtube { get; set; }
         public string Telegram { get; set; }
+        public string Major { get; set; }
 
         public double Lat { get; set; }
         public double Lng { get; set; }
@@ -34,6 +37,8 @@ namespace Course_API.Models.TrainerModels
         public int TrainerFlagId { get; set; }
         public DateTime FlagDate { get; set; }
 
+        public Country Country { get; set; }
+        public City City { get; set; }
         public TrainerTitle TrainerTitle { get; set; }
         public Nationality TrainerNationality { get; set; }
         public TrainerStatus TrainerStatus { get; set; }

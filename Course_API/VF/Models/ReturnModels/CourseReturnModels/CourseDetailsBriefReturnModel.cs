@@ -17,6 +17,7 @@ namespace Course_API.Models.ReturnModels.CourseReturnModels
         public string Currency { get; set; }
         public string Image { get; set; }
         public double TotalDay { get; set; }
-
+        public string Country { get; set; }
+        public string City { get; set; }
     }
 }

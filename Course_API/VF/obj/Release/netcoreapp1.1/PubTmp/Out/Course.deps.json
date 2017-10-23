@@ -1,7 +1,7 @@
 {
   "runtimeTarget": {
     "name": ".NETCoreApp,Version=v1.1",
-    "signature": "953eecc01ed37c4d3c7a29ee15228cb73293e249"
+    "signature": "904f16bc8faad8aa7edff3851924a0694dc81478"
   },
   "compilationOptions": {
     "defines": [
@@ -23,6 +23,7 @@
     ".NETCoreApp,Version=v1.1": {
       "Course/1.0.0": {
         "dependencies": {
+          "FluentScheduler": "5.3.0",
           "MailKit": "1.16.1",
           "Microsoft.ApplicationInsights.AspNetCore": "2.0.0",
           "Microsoft.AspNetCore": "1.1.1",
@@ -42,14 +43,24 @@
           "Microsoft.Extensions.Logging.Debug": "1.1.1",
           "Microsoft.NETCore.App": "1.1.2",
           "Newtonsoft.Json": "10.0.2",
+          "StructureMap.AspNetCore": "1.4.0",
           "Swashbuckle.AspNetCore": "1.0.0-rc3",
-          "System.Net.Http": "4.3.2"
+          "System.Net.Http": "4.3.2",
+          "StructureMap": "4.5.2"
         },
         "runtime": {
           "Course.dll": {}
         },
         "compile": {
           "Course.dll": {}
+        }
+      },
+      "FluentScheduler/5.3.0": {
+        "runtime": {
+          "lib/netstandard1.4/FluentScheduler.dll": {}
+        },
+        "compile": {
+          "lib/netstandard1.4/FluentScheduler.dll": {}
         }
       },
       "MailKit/1.16.1": {
@@ -1597,6 +1608,47 @@
             "rid": "win7-x86",
             "assetType": "native"
           }
+        }
+      },
+      "StructureMap/4.5.2": {
+        "dependencies": {
+          "NETStandard.Library": "1.6.1",
+          "System.Collections.Concurrent": "4.3.0",
+          "System.Reflection.Emit.Lightweight": "4.3.0",
+          "System.Reflection.TypeExtensions": "4.3.0",
+          "System.Runtime.Loader": "4.3.0"
+        },
+        "runtime": {
+          "lib/netstandard1.5/StructureMap.dll": {}
+        },
+        "compile": {
+          "lib/netstandard1.5/StructureMap.dll": {}
+        }
+      },
+      "StructureMap.AspNetCore/1.4.0": {
+        "dependencies": {
+          "Microsoft.AspNetCore.Hosting.Abstractions": "1.1.2",
+          "NETStandard.Library": "1.6.1",
+          "StructureMap.Microsoft.DependencyInjection": "1.4.0"
+        },
+        "runtime": {
+          "lib/netstandard1.3/StructureMap.AspNetCore.dll": {}
+        },
+        "compile": {
+          "lib/netstandard1.3/StructureMap.AspNetCore.dll": {}
+        }
+      },
+      "StructureMap.Microsoft.DependencyInjection/1.4.0": {
+        "dependencies": {
+          "Microsoft.Extensions.DependencyInjection.Abstractions": "1.1.1",
+          "NETStandard.Library": "1.6.1",
+          "StructureMap": "4.5.2"
+        },
+        "runtime": {
+          "lib/netstandard1.3/StructureMap.Microsoft.DependencyInjection.dll": {}
+        },
+        "compile": {
+          "lib/netstandard1.3/StructureMap.Microsoft.DependencyInjection.dll": {}
         }
       },
       "Swashbuckle.AspNetCore/1.0.0-rc3": {
@@ -3692,6 +3744,13 @@
       "serviceable": false,
       "sha512": ""
     },
+    "FluentScheduler/5.3.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-XBLwqw3FFdkG6qIrxg7M9mIsigZje+qKTinWZWfyr47IN6O/0z6fFUoQCVEBvY0lk1puf4hU0VnVhN/kPNZL+A==",
+      "path": "fluentscheduler/5.3.0",
+      "hashPath": "fluentscheduler.5.3.0.nupkg.sha512"
+    },
     "MailKit/1.16.1": {
       "type": "package",
       "serviceable": true,
@@ -4440,6 +4499,27 @@
       "sha512": "sha512-4cXRTIcttvIreAoqK/5hzTtzepeggac+m5A0rzH+9zLtnFh2J0rLuGeJR4KjNLyKqPzO0kjqrs5lkRJEKX8HAA==",
       "path": "runtime.win7-x86.runtime.native.system.data.sqlclient.sni/4.3.0",
       "hashPath": "runtime.win7-x86.runtime.native.system.data.sqlclient.sni.4.3.0.nupkg.sha512"
+    },
+    "StructureMap/4.5.2": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-Tx0ctPi/JKzd7RL8MQhGVWJHw8Ft3uNZYtOmMWnq4+3txsBt9FQ2lflWsyiK9yJ43aNnS10P1IXT+q3PIPs/BQ==",
+      "path": "structuremap/4.5.2",
+      "hashPath": "structuremap.4.5.2.nupkg.sha512"
+    },
+    "StructureMap.AspNetCore/1.4.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-ahx2bh+XZdvmFoWDG34loH8s0p8R/8jkiyaL5WauB/Bci5QwtP5AC8wI0sL8qqCl4vtWbbCSWzuhbFMeh7ENOw==",
+      "path": "structuremap.aspnetcore/1.4.0",
+      "hashPath": "structuremap.aspnetcore.1.4.0.nupkg.sha512"
+    },
+    "StructureMap.Microsoft.DependencyInjection/1.4.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-AF7VfvkZ0N0Fgm/HvUiRQEySPFuAi125MBehVQxCyHQkieIriG1r7OCs6LlmE3UXvRBbQecoOU4bWroaB5dS3g==",
+      "path": "structuremap.microsoft.dependencyinjection/1.4.0",
+      "hashPath": "structuremap.microsoft.dependencyinjection.1.4.0.nupkg.sha512"
     },
     "Swashbuckle.AspNetCore/1.0.0-rc3": {
       "type": "package",

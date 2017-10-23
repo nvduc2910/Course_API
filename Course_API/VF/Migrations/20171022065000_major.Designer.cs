@@ -9,9 +9,10 @@ using Course_API.Enums;
 namespace Course_API.Migrations
 {
     [DbContext(typeof(VfDbContext))]
-    partial class VfDbContextModelSnapshot : ModelSnapshot
+    [Migration("20171022065000_major")]
+    partial class major
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
             modelBuilder
                 .HasAnnotation("ProductVersion", "1.1.1")

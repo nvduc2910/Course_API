@@ -8,6 +8,7 @@ using Course_API.Infrastructures;
 using Course_API.Models;
 using Course_API.Models.ReturnModels.InstituteReturnModels;
 using Course_API.Repository;
+using Course_API.Resources;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -65,12 +66,72 @@ namespace Course_API.Controllers
                 {
                     Id = item.Id,
                     Image = item.Logo,
+                    Name = item.Name,
                 };
 
                 lstInstitudes.Add(institudeBriefItem);
             }
 
             return ApiResponder.RespondSuccessTo(HttpStatusCode.Ok, lstInstitudes);
+        }
+
+        [HttpGet]
+        public IActionResult InstituteDetails(int instituteId)
+        {
+            var institute = unitOfWork.GetRepository<Institute>().Get(s => s.Id == instituteId, null, "Course,Country,City").FirstOrDefault();
+
+            if (institute == null)
+
+                return ApiResponder.RespondFailureTo(HttpStatusCode.Ok, "Institute not found", ErrorCodes.TrainerNotFound);
+
+            var instituteDetailsReturnModel = new InstituteDetailsReturnModel()
+            {
+                Id = institute.Id,
+                Name = institute.Name,
+                Country = institute.Country.Name,
+                City = institute.City.Name,
+                About = institute.About,
+                Logo = institute.Logo,
+                Contact = new InstituteContactReturnModel()
+                {
+                    ContactNumber = institute.TelePhoneNumber,
+                    Email = institute.Email,
+                    Facebook = institute.Facebook,
+                    Twitter = institute.Twitter,
+                    Instagram = institute.Instagram,
+
+                },
+                OldCourse = new List<InstituteCounserBriefReturModel>(),
+                NewCourse = new List<InstituteCounserBriefReturModel>(),
+
+            };
+
+            foreach (var item in institute.Course)
+            {
+                if (item.EndDate < DateTime.Now)
+                {
+                    var oldCourseItem = new InstituteCounserBriefReturModel()
+                    {
+                        Id = item.Id,
+                        Image = item.Image,
+
+                    };
+                    instituteDetailsReturnModel.OldCourse.Add(oldCourseItem);
+                }
+
+                else if (item.StartDate > DateTime.Now)
+                {
+                    var newCourseItem = new InstituteCounserBriefReturModel()
+                    {
+                        Id = item.Id,
+                        Image = item.Image,
+
+                    };
+                    instituteDetailsReturnModel.NewCourse.Add(newCourseItem);
+                }
+            }
+
+            return ApiResponder.RespondSuccessTo(HttpStatusCode.Ok, instituteDetailsReturnModel);
         }
 
     }

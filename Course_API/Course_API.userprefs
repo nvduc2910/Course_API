@@ -1,25 +1,17 @@
 ﻿<Properties StartupConfiguration="{F0C7C302-5275-4121-AA01-11658E47C8B7}|Default">
-  <MonoDevelop.Ide.Workbench ActiveDocument="VF/Controllers/EntryDataController.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="VF/Controllers/CourseController.cs">
     <Files>
-      <File FileName="VF/Controllers/CourseController.cs" Line="166" Column="14" />
-      <File FileName="VF/Models/DatabaseModels/CourseModels/Course.cs" Line="132" Column="52" />
-      <File FileName="VF/Models/DatabaseModels/TrainerModels/Trainer.cs" Line="11" Column="36" />
-      <File FileName="VF/Models/DatabaseModels/RelModels/CourRel.cs" Line="13" Column="33" />
-      <File FileName="VF/Models/DatabaseModels/TrainerModels/Nationality.cs" Line="1" Column="1" />
-      <File FileName="VF/Models/DatabaseModels/TrainerModels/TrainerStatus.cs" Line="1" Column="1" />
-      <File FileName="VF/Models/DatabaseModels/TrainerModels/TrainerTitle.cs" Line="1" Column="1" />
-      <File FileName="VF/Controllers/EntryDataController.cs" Line="268" Column="9" />
-      <File FileName="VF/Models/ReturnModels/CourseReturnModels/CourseDetailsReturnModel.cs" Line="49" Column="6" NotebookId="1" />
+      <File FileName="VF/Controllers/CourseController.cs" Line="197" Column="51" />
+      <File FileName="VF/Controllers/TrainerController.cs" Line="110" Column="22" />
+      <File FileName="VF/Controllers/InstituteController.cs" Line="89" Column="35" />
+      <File FileName="VF/Models/ReturnModels/CourseReturnModels/CourseDetailsReturnModel.cs" Line="25" Column="35" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
     <BreakpointStore>
-      <Breakpoint file="/Users/apple/Documents/Freelancer Projects/Backend/Course_API/Course_API/VF/Controllers/AccountController.cs" relfile="VF/Controllers/AccountController.cs" line="247" column="23" />
-      <Breakpoint file="/Users/apple/Documents/Freelancer Projects/Backend/Course_API/Course_API/VF/Controllers/AccountController.cs" relfile="VF/Controllers/AccountController.cs" line="241" column="1" />
-      <Breakpoint file="/Users/apple/Documents/Freelancer Projects/Backend/Course_API/Course_API/VF/CustomAttribute/HandleExceptionAttribute.cs" relfile="VF/CustomAttribute/HandleExceptionAttribute.cs" line="13" column="1" />
-      <Breakpoint file="/Users/apple/Documents/Freelancer Projects/Backend/Course_API/Course_API/VF/Controllers/AccountController.cs" relfile="VF/Controllers/AccountController.cs" line="103" column="1" />
-      <Breakpoint file="/Users/apple/Documents/Freelancer Projects/Backend/Course_API/Course_API/VF/Controllers/CourseController.cs" relfile="VF/Controllers/CourseController.cs" line="163" column="1" />
+      <Breakpoint file="/Users/apple/Documents/Freelancer Projects/Backend/Course_API/Course_API/VF/Providers/EmailSender.cs" relfile="VF/Providers/EmailSender.cs" line="90" column="1" />
+      <Breakpoint file="/Users/apple/Documents/Freelancer Projects/Backend/Course_API/Course_API/VF/Controllers/CourseController.cs" relfile="VF/Controllers/CourseController.cs" line="353" column="1" />
     </BreakpointStore>
   </MonoDevelop.Ide.DebuggingService.Breakpoints>
   <MonoDevelop.Ide.DebuggingService.PinnedWatches />
