@@ -25013,6 +25013,7 @@
         "netcoreapp1.1"
       ],
       "sources": {
+        "/usr/local/share/dotnet/sdk/NuGetFallbackFolder": {},
         "https://api.nuget.org/v3/index.json": {},
         "https://dotnet.myget.org/F/aspnetcore-dev/api/v3/index.json": {}
       },

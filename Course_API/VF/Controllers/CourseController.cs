@@ -168,11 +168,10 @@ namespace Course_API.Controllers
         }
 
 
-
         [HttpGet]
         public IActionResult GetCourseDetails(int courseId)
         {
-            var course = unitOfWork.GetRepository<Course>().Get(s => s.Id == courseId, null, "Institude,Currency,Organizer.Country.City,CourTra.Trainer.TrainerNationality,CourRel.Reliance,CourseDayType").FirstOrDefault();
+            var course = unitOfWork.GetRepository<Course>().Get(s => s.Id == courseId, null, "Institude,Currency,Organizer.Country.City,CourTra.Trainer.TrainerNationality,CourRel.Reliance,CourseDayType,CourseType").FirstOrDefault();
 
             if (course == null)
 
@@ -196,6 +195,8 @@ namespace Course_API.Controllers
                 Lat = course.Lat,
                 RegisterLink = course.RegisterLink,
                 Lng = course.Long,
+                CourseType = course.CourseType?.Type,
+
                 Contact = new CourseDetailsReturnModel.CourseContactReturnModel()
                 {
                     ContactNumber = course.Institude.TelePhoneNumber,
@@ -217,7 +218,6 @@ namespace Course_API.Controllers
                     Avatar = item.Trainer.Logo,
                     Name = item.Trainer.Name,
                     Major = item.Trainer.Major,
-
                 };
 
                 courseReturn.Trainer.Add(courseTrainerReturn);
@@ -247,9 +247,9 @@ namespace Course_API.Controllers
             {
                
                 CityId = favoriteModel.CityId,
+                CourseScopeId = favoriteModel.CourseScopeId,
                 CourseTypeId = favoriteModel.CourseTypeId,
-                InstituteId = favoriteModel.InstituteId,
-                SelectTime = favoriteModel.SelectTime,
+                Gender = favoriteModel.Gender,
                 TraineeId = userId,
                 CountryId = favoriteModel.CountryId,
             };
@@ -260,8 +260,8 @@ namespace Course_API.Controllers
             {
                 favoriteInserted.CityId = favoriteModel.CityId;
                 favoriteInserted.CourseTypeId = favoriteModel.CourseTypeId;
-                favoriteInserted.InstituteId = favoriteModel.InstituteId;
-                favoriteInserted.SelectTime = favoriteModel.SelectTime;
+                favoriteInserted.CourseScopeId = favoriteModel.CourseScopeId;
+                favoriteInserted.Gender = favoriteModel.Gender;
                 favoriteInserted.TraineeId = userId;
                 favoriteInserted.CountryId = favoriteModel.CountryId;
 
@@ -273,7 +273,7 @@ namespace Course_API.Controllers
 
             foreach (var item in courses)
             {
-                if (item.Organizer.CityId == favoriteModel.CityId && item.InstituteId == favoriteModel.InstituteId && item.CourseTypeId == favoriteModel.CourseTypeId && item.StartDate.Date == favoriteModel.SelectTime.Date)
+                if (item.Organizer.CityId == favoriteModel.CityId && item.CourseTypeId == favoriteModel.CourseTypeId && item.CourseScopeId == favoriteModel.CourseScopeId && item.Gender == favoriteModel.Gender)
                 {
                     var coureseBriefDetailsItem = new CourseDetailsBriefReturnModel()
                     {
@@ -313,7 +313,7 @@ namespace Course_API.Controllers
 
             foreach (var item in courses)
             {
-                if (item.Organizer.CityId == favoriteModel.CityId && item.InstituteId == favoriteModel.InstituteId && item.CourseTypeId == favoriteModel.CourseTypeId && item.StartDate.Date == favoriteModel.SelectTime.Date)
+                if (item.Organizer.CityId == favoriteModel.CityId && item.CourseTypeId == favoriteModel.CourseTypeId && item.CourseScopeId == favoriteModel.CourseScopeId && item.Gender == favoriteModel.Gender)
                 {
                     var coureseBriefDetailsItem = new CourseDetailsBriefReturnModel()
                     {
@@ -341,7 +341,7 @@ namespace Course_API.Controllers
 
 
         [HttpPost]
-        public IActionResult Reminder(int courseId)
+        public IActionResult Reminder(int courseId, int day)
         {
 
             var userId = Convert.ToInt32(userManager.GetUserId(User));
@@ -350,8 +350,8 @@ namespace Course_API.Controllers
 
             var course = unitOfWork.GetRepository<Course>().Get(s => s.Id == courseId).FirstOrDefault();
 
-            var jobRegistry = new JobRegistry(user.Email, course.Name, course + "is going start", course.StartDate, this.emailOptions);
-            JobManager.Initialize(new JobRegistry(user.Email, course.Name, course + "is going start",course.StartDate, this.emailOptions));
+            var jobRegistry = new JobRegistry(user.Email, course.Name, course + "is going start", course.StartDate.AddDays(-day), this.emailOptions);
+            JobManager.Initialize(new JobRegistry(user.Email, course.Name, course + "is going start",course.StartDate.AddDays(-day), this.emailOptions));
 
             return ApiResponder.RespondSuccessTo(HttpStatusCode.Ok, "OK");
         }
@@ -368,7 +368,7 @@ namespace Course_API.Controllers
 
             foreach (var item in courses)
             {
-                if (item.Organizer.CityId == favoriteModel.CityId && item.InstituteId == favoriteModel.InstituteId && item.CourseTypeId == favoriteModel.CourseTypeId && item.StartDate.Date == favoriteModel.SelectTime.Date)
+                if (item.Organizer.CityId == favoriteModel.CityId && item.CourseTypeId == favoriteModel.CourseTypeId && item.CourseScopeId == favoriteModel.CourseScopeId && item.Gender == favoriteModel.Gender)
                 {
                     var coureseBriefDetailsItem = new CourseDetailsBriefReturnModel()
                     {

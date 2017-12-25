@@ -23,9 +23,9 @@ namespace Course_API.Models.ReturnModels.CourseReturnModels
         public double Lng { get; set; }
         public string Address { get; set; }
         public string RegisterLink { get; set; }
+        public string CourseType { get; set; }
 
         public List<CourseTrainerReturnModel> Trainer { get; set; }
-
         public CourseContactReturnModel Contact { get; set; }
         public List<CourseRelianceReturnModel> Reliance { get; set; }
 
