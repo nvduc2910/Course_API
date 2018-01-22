@@ -30,6 +30,19 @@ using System.Globalization;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.Extensions.Options;
 using Course_API.CustomAttribute;
+using AutoMapper;
+using System.Reflection;
+using Course_API.Models.BindingModels.Course;
+using Course_API.Models.ReturnModels.Webs;
+using Course_API.Models.DatabaseModels.RelianceModels;
+using Course_API.Models.BindingModels.Institute;
+using Course_API.Models.ReturnModels.CourseReturnModels;
+using Course_API.Models.ReturnModels;
+using Course_API.Models.DatabaseModels.CourseModels;
+using Course_API.Models.TrainerModels;
+using Course_API.Models.ReturnModels.TrainerReturnModels;
+using Course_API.Models.DatabaseModels.RelModels;
+using Course_API.Models.BindingModels.Trainer;
 
 namespace Course_API
 {
@@ -97,7 +110,7 @@ namespace Course_API
                 options.Hubs.EnableDetailedErrors = true;
             });
 
-            services.AddIdentity<Trainee, IdentityRole<int>>()
+            services.AddIdentity<User, IdentityRole<int>>()
                 .AddEntityFrameworkStores<VfDbContext, int>()
                 .AddDefaultTokenProviders();
 
@@ -156,6 +169,117 @@ namespace Course_API
                 options.ClientId = Configuration.GetSection("GoogleConfigOptions:AppId").Value;
                 options.ClientSecret = Configuration.GetSection("GoogleConfigOptions:AppSecret").Value;
             });
+
+            var config = new AutoMapper.MapperConfiguration(cfg =>
+            {
+                cfg.CreateMap<int, CourTra>()
+               .ForMember(dest => dest.TrainerId, opts => opts.MapFrom(src => src));
+
+
+                cfg.CreateMap<int, CourRel>()
+                .ForMember(dest => dest.RelianceId, opts => opts.MapFrom(src => src));
+
+
+                cfg.CreateMap<CourseDTO, Course>()
+                .ForMember(dest => dest.CourseScope, opts => opts.Ignore())
+                .ForMember(dest => dest.Institude, opts => opts.Ignore())
+                .ForMember(dest => dest.CourseStatus, opts => opts.Ignore())
+                .ForMember(dest => dest.CourseType, opts => opts.Ignore())
+                .ForMember(dest => dest.CourseLevel, opts => opts.Ignore())
+                .ForMember(dest => dest.CourseCategory, opts => opts.Ignore())
+                .ForMember(dest => dest.CourseLanguage, opts => opts.Ignore())
+                .ForMember(dest => dest.Currency, opts => opts.Ignore())
+                .ForMember(dest => dest.CourseCancelReason, opts => opts.Ignore())
+
+                .ForMember(dest => dest.Organizer, opts => opts.Ignore())
+                .ForMember(dest => dest.CourTra, opts => opts.MapFrom(src => src.Trainers))
+                .ForMember(dest => dest.CourRel, opts => opts.MapFrom(src => src.Reliances))
+                .ForMember(dest => dest.CourseDayType, opts => opts.Ignore())
+                .ForMember(dest => dest.CourseFavorite, opts => opts.Ignore());
+
+
+                cfg.CreateMap<InstituteDTO, Institute>()
+                .ForMember(dest => dest.Country, opts => opts.Ignore())
+                .ForMember(dest => dest.City, opts => opts.Ignore())
+                .ForMember(dest => dest.InstituteType, opts => opts.Ignore())
+                .ForMember(dest => dest.InstitudeFlag, opts => opts.Ignore())
+                .ForMember(dest => dest.Course, opts => opts.Ignore())
+                .ForMember(dest => dest.Reliance, opts => opts.Ignore())
+                .ForMember(dest => dest.User, opts => opts.Ignore());
+
+
+
+                cfg.CreateMap<Country,CountryReturnModel>();
+                cfg.CreateMap<City, CityReturnModel>();
+                cfg.CreateMap<Reliance, RelianceReturnModel>();
+
+                cfg.CreateMap<Institute, InstituteProfileReturnModel>()
+                .ForMember(dest => dest.Country, opts => opts.MapFrom(src => src.Country))
+                .ForMember(dest => dest.City, opts => opts.MapFrom(src => src.City))
+                .ForMember(dest => dest.InstituteType, opts => opts.MapFrom(src => src.InstituteType))
+                .ForMember(dest => dest.Reliance, opts => opts.MapFrom(src => src.Reliance));
+
+
+                cfg.CreateMap<Course, CourseBriefReturnModel>()
+                .ForMember(dest => dest.InstitudeName, opts => opts.MapFrom(src => src.Institude.Name));
+
+
+                //course details return model
+
+                cfg.CreateMap<CourseScope, CourseScopeReturnModel>();
+                cfg.CreateMap<CourseStatus, CourseStatusReturnModel>();
+                cfg.CreateMap<CourseType, CourseTypeReturnModel>();
+                cfg.CreateMap<Institute, CourseInstituteReturnModel>();
+                cfg.CreateMap<CourseLevel, CourseLevel>();
+                cfg.CreateMap<CourseCategory, CourseCategoryReturnModel>();
+                cfg.CreateMap<CourseLevel, CourseLevel>();
+                cfg.CreateMap<CourseCategory, CourseCategoryReturnModel>();
+                cfg.CreateMap<CourseLanguage, CourseLanguageReturnModel>();
+                cfg.CreateMap<Currency, CurrencyReturnModel>();
+                cfg.CreateMap<CourseCancelReason, CourseCancelReasonReturnModel>();
+                cfg.CreateMap<CourTra, TrainerBirefReturnModel>()
+                .ForMember(dest => dest.Name, opts => opts.MapFrom(src => src.Trainer.Name))
+                .ForMember(dest => dest.Major, opts => opts.MapFrom(src => src.Trainer.Major))
+                .ForMember(dest => dest.Avatar, opts => opts.MapFrom(src => src.Trainer.Logo))
+                .ForMember(dest => dest.Id, opts => opts.MapFrom(src => src.Trainer.Id));
+
+
+                cfg.CreateMap<CourRel, RelianceReturnModel>()
+                .ForMember(dest => dest.Id, opts => opts.MapFrom(src => src.Reliance.Id))
+                .ForMember(dest => dest.Logo, opts => opts.MapFrom(src => src.Reliance.Logo))
+                .ForMember(dest => dest.Name, opts => opts.MapFrom(src => src.Reliance.Name));
+
+                cfg.CreateMap<Course, CourseDetailsReturnModel>()
+                .ForMember(dest => dest.CourseScope, opts => opts.MapFrom(src => src.CourseScope))
+                .ForMember(dest => dest.CourseStatus, opts => opts.MapFrom(src => src.CourseStatus))
+                .ForMember(dest => dest.CourseType, opts => opts.MapFrom(src => src.CourseType))
+                .ForMember(dest => dest.CourseInstitute, opts => opts.MapFrom(src => src.Institude))
+                .ForMember(dest => dest.CourseLevel, opts => opts.MapFrom(src => src.CourseLevel))
+                .ForMember(dest => dest.CourseCategory, opts => opts.MapFrom(src => src.CourseCategory))
+                .ForMember(dest => dest.CourseLanguage, opts => opts.MapFrom(src => src.CourseLanguage))
+                .ForMember(dest => dest.Currency, opts => opts.MapFrom(src => src.Currency))
+                .ForMember(dest => dest.CourseCancelReason, opts => opts.MapFrom(src => src.CourseCancelReason))
+                .ForMember(dest => dest.CourseFlag, opts => opts.MapFrom(src => src.CourseFlag))
+                .ForMember(dest => dest.Trainer, opts => opts.MapFrom(src => src.CourTra))
+                .ForMember(dest => dest.Reliance, opts => opts.MapFrom(src => src.CourRel));
+
+
+                cfg.CreateMap<TrainerDTO, Trainer>()
+                .ForMember(dest => dest.CourTra, opts => opts.Ignore())
+                .ForMember(dest => dest.City, opts => opts.Ignore())
+                .ForMember(dest => dest.Country, opts => opts.Ignore())
+                .ForMember(dest => dest.TrainerTitle, opts => opts.Ignore())
+                .ForMember(dest => dest.TrainerNationality, opts => opts.Ignore())
+                .ForMember(dest => dest.TrainerStatus, opts => opts.Ignore())
+                .ForMember(dest => dest.TrainerFlag, opts => opts.Ignore())
+                .ForMember(dest => dest.Institute, opts => opts.Ignore());
+
+      
+
+            });
+
+            var mapper = config.CreateMapper();
+            services.AddSingleton(mapper);
 
         }
         private string GetXmlCommentsPath(ApplicationEnvironment appEnvironment)

@@ -22,7 +22,7 @@ namespace Course_API.Controllers
     [HandleException]
     public class EntryDataController : BaseController
     {
-        public EntryDataController(IUnitOfWork unitOfWork, UserManager<Trainee> userManager, IHttpContextAccessor httpCotext) : base(unitOfWork, userManager, httpCotext)
+        public EntryDataController(IUnitOfWork unitOfWork, UserManager<User> userManager, IHttpContextAccessor httpCotext) : base(unitOfWork, userManager, httpCotext)
         {
         }
 

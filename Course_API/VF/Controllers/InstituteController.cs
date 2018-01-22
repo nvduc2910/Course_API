@@ -2,11 +2,16 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using Course_API.CustomAttribute;
+using Course_API.Exceptions;
 using Course_API.Helpers;
 using Course_API.Infrastructures;
 using Course_API.Models;
+using Course_API.Models.BindingModels.Institute;
+using Course_API.Models.DatabaseModels.RelianceModels;
 using Course_API.Models.ReturnModels.InstituteReturnModels;
+using Course_API.Models.ReturnModels.Webs;
 using Course_API.Repository;
 using Course_API.Resources;
 using Microsoft.AspNetCore.Http;
@@ -22,11 +27,52 @@ namespace Course_API.Controllers
     [HandleException]
     public class InstituteController : BaseController
     {
-        public InstituteController(IUnitOfWork unitOfWork, UserManager<Trainee> userManager, IHttpContextAccessor httpCotext) : base(unitOfWork, userManager, httpCotext)
+        public InstituteController(IUnitOfWork unitOfWork, UserManager<User> userManager, IHttpContextAccessor httpCotext, IMapper mapper) : base(unitOfWork, userManager, httpCotext, mapper)
         {
-            
+
         }
 
+        #region UpdateInstituteProfile
+        [HttpPost]
+        public async Task<IActionResult> UpdateInstituteProfile([FromBody] InstituteDTO institute)
+        {
+            var data = mapper.Map<InstituteDTO, Institute>(institute);
+            data.UserId = UserIdRequested();
+            var dataInserted = await unitOfWork.GetRepository<Institute>().InsertAsync(data);
+
+            foreach(var item in institute.Reliance)
+            {
+                var relianceItem = new Reliance()
+                {
+                    InstituteId = dataInserted.Id,
+                    Logo = item.Logo,
+                    RelianceStatusId = item.Status,
+                    Name = item.Name,
+                };
+                await unitOfWork.GetRepository<Reliance>().InsertAsync(relianceItem);
+            }
+
+            return ApiResponder.RespondSuccessTo(HttpStatusCode.Ok, dataInserted);
+        }
+
+        #endregion
+
+        #region GetInstitueProfile
+        [HttpGet]
+        public IActionResult GetInstitueProfile()
+        {
+            var data = unitOfWork.GetRepository<Institute>().Get(s => s.UserId == UserIdRequested(), null, "Country,City,InstituteType,Reliance").FirstOrDefault();
+            if(data == null)
+                throw new UserNotExistsException(Account.UsetNotFound);
+
+            var response = mapper.Map<Institute, InstituteProfileReturnModel>(data);
+
+            return ApiResponder.RespondSuccessTo(HttpStatusCode.Ok, response);
+        }
+
+        #endregion
+
+        #region GetInstituteFlag
 
         [HttpGet]
         public IActionResult GetInstituteFlag()
@@ -36,6 +82,10 @@ namespace Course_API.Controllers
             return ApiResponder.RespondSuccessTo(HttpStatusCode.Ok, institutes);
         }
 
+        #endregion
+
+        #region GetInstituteStatus
+
         [HttpGet]
         public IActionResult GetInstituteStatus()
         {
@@ -44,6 +94,9 @@ namespace Course_API.Controllers
             return ApiResponder.RespondSuccessTo(HttpStatusCode.Ok, instituteStatus);
         }
 
+        #endregion
+
+        #region GetInstituteType
 
         [HttpGet]
         public IActionResult GetInstituteType()
@@ -53,6 +106,9 @@ namespace Course_API.Controllers
             return ApiResponder.RespondSuccessTo(HttpStatusCode.Ok, instituteTypes);
         }
 
+        #endregion
+
+        #region GetInstitute
         [HttpGet]
         public IActionResult GetInstitute(int page, int pageSize)
         {
@@ -60,7 +116,7 @@ namespace Course_API.Controllers
             var lstInstitudes = new List<InstitudeBriefReturnModel>();
             var institudes = unitOfWork.GetRepository<Institute>().Get().Skip((page - 1) * pageSize).Take(pageSize).ToList();
 
-            foreach(var item in institudes)
+            foreach (var item in institudes)
             {
                 var institudeBriefItem = new InstitudeBriefReturnModel()
                 {
@@ -75,6 +131,9 @@ namespace Course_API.Controllers
             return ApiResponder.RespondSuccessTo(HttpStatusCode.Ok, lstInstitudes);
         }
 
+        #endregion
+
+        #region InstituteDetails
         [HttpGet]
         public IActionResult InstituteDetails(int instituteId)
         {
@@ -134,7 +193,22 @@ namespace Course_API.Controllers
             return ApiResponder.RespondSuccessTo(HttpStatusCode.Ok, instituteDetailsReturnModel);
         }
 
+        #endregion
+
+        #region DeleteInstitude
+        [HttpDelete]
+        public async Task<IActionResult> DeleteInstitude(int institudeId)
+        {
+            var institute = unitOfWork.GetRepository<Institute>().Get(s => s.Id == institudeId, null, "Course,Country,City").FirstOrDefault();
+
+            if (institute == null)
+
+                return ApiResponder.RespondFailureTo(HttpStatusCode.Ok, "Institute not found", ErrorCodes.TrainerNotFound);
+
+            return ApiResponder.RespondSuccessTo(HttpStatusCode.Ok, "Deleted");
+
+        }
+
+        #endregion
     }
-
-
 }

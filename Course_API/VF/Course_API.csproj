@@ -32,19 +32,23 @@
     <Folder Include="Models\ReturnModels\" />
     <Folder Include="SwaggerAuthen\" />
     <Folder Include="wwwroot\" />
-    <Folder Include="Models\DatabaseModels\" />
-    <Folder Include="Models\DatabaseModels\InstitudeModels\" />
-    <Folder Include="Models\DatabaseModels\OrgranizerModels\" />
-    <Folder Include="Models\DatabaseModels\TraineeModels\" />
-    <Folder Include="Models\DatabaseModels\TrainerModels\" />
-    <Folder Include="Models\DatabaseModels\CourseModels\" />
-    <Folder Include="Models\DatabaseModels\RelianceModels\" />
-    <Folder Include="Models\DatabaseModels\RelModels\" />
+    <Folder Include="Models\Entites\" />
+    <Folder Include="Models\Entites\InstitudeModels\" />
+    <Folder Include="Models\Entites\OrgranizerModels\" />
+    <Folder Include="Models\Entites\TraineeModels\" />
+    <Folder Include="Models\Entites\TrainerModels\" />
+    <Folder Include="Models\Entites\CourseModels\" />
+    <Folder Include="Models\Entites\RelianceModels\" />
+    <Folder Include="Models\Entites\RelModels\" />
     <Folder Include="Models\ReturnModels\CourseReturnModels\" />
     <Folder Include="Models\ReturnModels\InstituteReturnModels\" />
     <Folder Include="Models\ReturnModels\TrainerReturnModels\" />
     <Folder Include="Models\ReturnModels\TraineeReturnModels\" />
     <Folder Include="TaskSchedules\" />
+    <Folder Include="Models\BindingModels\Course\" />
+    <Folder Include="Models\BindingModels\Institute\" />
+    <Folder Include="Models\ReturnModels\Webs\" />
+    <Folder Include="Models\BindingModels\Trainer\" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.All" Version="2.0.0-preview1-final" />
@@ -70,6 +74,7 @@
     <PackageReference Include="FluentScheduler" Version="5.3.0" />
     <PackageReference Include="StructureMap.AspNetCore" Version="1.4.0" />
     <PackageReference Include="structuremap" Version="4.5.2" />
+    <PackageReference Include="AutoMapper" Version="6.2.2" />
   </ItemGroup>
 
   <ItemGroup>

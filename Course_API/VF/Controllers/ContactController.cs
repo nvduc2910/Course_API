@@ -22,7 +22,7 @@ namespace Course_API.Controllers
     [HandleException]
     public class ContactController : BaseController
     {
-        public ContactController(IUnitOfWork unitOfWork, UserManager<Trainee> userManager, IHttpContextAccessor httpCotext) : base(unitOfWork, userManager, httpCotext)
+        public ContactController(IUnitOfWork unitOfWork, UserManager<User> userManager, IHttpContextAccessor httpCotext) : base(unitOfWork, userManager, httpCotext)
         {
         }
 

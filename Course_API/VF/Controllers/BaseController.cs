@@ -8,6 +8,9 @@ using Microsoft.AspNetCore.Identity;
 using Course_API.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Primitives;
+using Course_API.Exceptions;
+using Course_API.Resources;
+using AutoMapper;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -27,22 +30,33 @@ namespace Course_API.Controllers
         /// <summary>
         /// usermanager instance
         /// </summary>
-        public UserManager<Trainee> userManager;
+        public UserManager<User> userManager;
         /// <summary>
         /// httpContext instance
         /// </summary>
         public IHttpContextAccessor httpContext;
+
+        public  IMapper mapper;
+        private IHttpContextAccessor httpCotext;
+
+        public BaseController(IUnitOfWork unitOfWork, UserManager<User> userManager, IHttpContextAccessor httpCotext)
+        {
+            this.unitOfWork = unitOfWork;
+            this.userManager = userManager;
+            this.httpCotext = httpCotext;
+        }
 
         /// <summary>
         /// Contructor of base controller
         /// </summary>
         /// <param name="unitOfWork"></param>
         /// <param name="userManager"></param>
-        public BaseController(IUnitOfWork unitOfWork, UserManager<Trainee> userManager, IHttpContextAccessor httpCotext)
+        public BaseController(IUnitOfWork unitOfWork, UserManager<User> userManager, IHttpContextAccessor httpCotext, IMapper mapper)
         {
             this.httpContext = httpCotext;
             this.unitOfWork = unitOfWork;
             this.userManager = userManager;
+            this.mapper = mapper;
         }
 
         [NonAction]
@@ -50,6 +64,16 @@ namespace Course_API.Controllers
         {
             var language = this.httpContext.HttpContext.Request?.Headers["Accept-Language"];
             return language.ToString();
+        }
+
+        [NonAction]
+        public int UserIdRequested()
+        {
+            var userId = Convert.ToInt32(userManager.GetUserId(User));
+            if (userId != 0)
+                return userId;
+            else 
+                throw new UserNotExistsException(Account.UsetNotFound); 
         }
     }
 }

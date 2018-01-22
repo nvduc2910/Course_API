@@ -2,10 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using Course_API.CustomAttribute;
 using Course_API.Helpers;
 using Course_API.Infrastructures;
 using Course_API.Models;
+using Course_API.Models.BindingModels.Trainer;
 using Course_API.Models.ReturnModels.TrainerReturnModels;
 using Course_API.Models.TrainerModels;
 using Course_API.Repository;
@@ -23,9 +25,9 @@ namespace Course_API.Controllers
     [HandleException]
     public class TrainerController : BaseController
     {
-        public TrainerController(IUnitOfWork unitOfWork, UserManager<Trainee> userManager, IHttpContextAccessor httpCotext) : base(unitOfWork, userManager, httpCotext)
+        public TrainerController(IUnitOfWork unitOfWork, UserManager<User> userManager, IHttpContextAccessor httpCotext, IMapper mapper) : base(unitOfWork, userManager, httpCotext, mapper)
         {
-            
+
         }
 
         [HttpGet]
@@ -33,9 +35,9 @@ namespace Course_API.Controllers
         {
             var lstTrainerBirefReturnModel = new List<TrainerBirefReturnModel>();
 
-            var traineres = unitOfWork.GetRepository<Trainer>().Get(null,null,"CourTra.Course").Skip((page - 1) * pageSize).Take(pageSize).ToList();
+            var traineres = unitOfWork.GetRepository<Trainer>().Get(null, null, "CourTra.Course").Skip((page - 1) * pageSize).Take(pageSize).ToList();
 
-            foreach(var item in traineres)
+            foreach (var item in traineres)
             {
                 var trainerBriefItem = new TrainerBirefReturnModel()
                 {
@@ -46,7 +48,7 @@ namespace Course_API.Controllers
 
                 };
 
-                foreach(var itemTrainer in item.CourTra)
+                foreach (var itemTrainer in item.CourTra)
                 {
                     if (itemTrainer.Course.StartDate < DateTime.Now)
                         trainerBriefItem.TotalActive += 1;
@@ -63,10 +65,10 @@ namespace Course_API.Controllers
         {
             var trainer = unitOfWork.GetRepository<Trainer>().Get(s => s.Id == trainerId, null, "CourTra.Course,Country,City").FirstOrDefault();
 
-            if(trainer == null)
-                
+            if (trainer == null)
+
                 return ApiResponder.RespondFailureTo(HttpStatusCode.Ok, "Trainer not found", ErrorCodes.TrainerNotFound);
-            
+
             var trainerDetailsReturnModel = new TrainerDetailsReturnModel()
             {
                 Id = trainer.Id,
@@ -91,7 +93,7 @@ namespace Course_API.Controllers
 
             };
 
-            foreach(var item in trainer.CourTra)
+            foreach (var item in trainer.CourTra)
             {
                 if (item.Course.EndDate < DateTime.Now)
                 {
@@ -103,8 +105,8 @@ namespace Course_API.Controllers
                     };
                     trainerDetailsReturnModel.OldCourses.Add(oldCourseItem);
                 }
-                   
-                else if(item.Course.StartDate > DateTime.Now)
+
+                else if (item.Course.StartDate > DateTime.Now)
                 {
                     var newCourseItem = new TrainerCounserBriefReturModel()
                     {
@@ -113,10 +115,63 @@ namespace Course_API.Controllers
 
                     };
                     trainerDetailsReturnModel.NewCourses.Add(newCourseItem);
-                }                                    
+                }
             }
 
             return ApiResponder.RespondSuccessTo(HttpStatusCode.Ok, trainerDetailsReturnModel);
         }
+
+
+        #region CreateNewTrainer
+        [HttpPost]
+        public async Task<IActionResult> CreateNewTrainer([FromBody] TrainerDTO trainerDTO)
+        {
+            var dataInsert = mapper.Map<TrainerDTO, Trainer>(trainerDTO);
+            dataInsert.InstituteId = UserIdRequested();
+
+            await unitOfWork.GetRepository<Trainer>().InsertAsync(dataInsert);
+            return ApiResponder.RespondSuccessTo(HttpStatusCode.Ok, "Added");
+        }
+
+        #endregion
+
+
+        #region GetInstitudeTrainerList
+        [HttpGet]
+        public IActionResult GetInstitudeTrainerList(int page, int pageSize)
+        {
+            return ApiResponder.RespondSuccessTo(HttpStatusCode.Ok, null);
+        }
+
+        #endregion
+
+
+        #region DeleteTrainer
+        [HttpDelete]
+        public async Task<IActionResult> DeleteTrainer(int trainerId)
+        {
+            var data = unitOfWork.GetRepository<Trainer>().Get(s => s.Id == trainerId).FirstOrDefault();
+            if (data == null)
+                return ApiResponder.RespondFailureTo(HttpStatusCode.Ok, "Trainer not found", ErrorCodes.TrainerNotFound);
+
+            return ApiResponder.RespondSuccessTo(HttpStatusCode.Ok, "Deleted");
+        }
+
+        #endregion
+
+        #region UpdateTrainer
+        [HttpPut]
+        public async Task<IActionResult> UpdateTrainer([FromBody] TrainerDTO trainerDTO, int trainerId)
+        {
+            var data = unitOfWork.GetRepository<Trainer>().Get(s => s.Id == trainerId).FirstOrDefault();
+            if (data == null)
+                return ApiResponder.RespondFailureTo(HttpStatusCode.Ok, "Trainer not found", ErrorCodes.TrainerNotFound);
+
+            return ApiResponder.RespondSuccessTo(HttpStatusCode.Ok, "Updated");
+        }
+
+        #endregion
+
+
     }
 }

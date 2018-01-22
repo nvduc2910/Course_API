@@ -15,7 +15,7 @@ namespace Course_API.Models.ReturnModels.TrainerReturnModels
         public string Avatar { get; set; }
         public string Major { get; set; }
         public int TotalActive { get; set; }
+
+
     }
-
-
 }

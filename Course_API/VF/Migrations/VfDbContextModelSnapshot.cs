@@ -116,6 +116,8 @@ namespace Course_API.Migrations
 
                     b.Property<int>("InstituteId");
 
+                    b.Property<bool>("IsApproved");
+
                     b.Property<double>("Lat");
 
                     b.Property<double>("Long");
@@ -131,7 +133,7 @@ namespace Course_API.Migrations
 
                     b.Property<string>("OnlineLink");
 
-                    b.Property<int>("OrganizerId");
+                    b.Property<int?>("OrganizerId");
 
                     b.Property<string>("Others");
 
@@ -355,19 +357,23 @@ namespace Course_API.Migrations
 
                     b.Property<int?>("CourseId");
 
+                    b.Property<int>("CourseScopeId");
+
                     b.Property<int>("CourseTypeId");
 
-                    b.Property<int>("InstituteId");
+                    b.Property<int>("Gender");
 
-                    b.Property<DateTime>("SelectTime");
+                    b.Property<int>("PriceId");
 
                     b.Property<int>("TraineeId");
+
+                    b.Property<int?>("UserId");
 
                     b.HasKey("Id");
 
                     b.HasIndex("CourseId");
 
-                    b.HasIndex("TraineeId");
+                    b.HasIndex("UserId");
 
                     b.ToTable("Favorite");
                 });
@@ -377,11 +383,17 @@ namespace Course_API.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
 
+                    b.Property<int>("InstituteId");
+
                     b.Property<string>("Logo");
+
+                    b.Property<string>("Name");
 
                     b.Property<int>("RelianceStatusId");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("InstituteId");
 
                     b.HasIndex("RelianceStatusId");
 
@@ -531,6 +543,8 @@ namespace Course_API.Migrations
 
                     b.Property<string>("UNANumber");
 
+                    b.Property<int?>("UserId");
+
                     b.Property<string>("Website");
 
                     b.Property<string>("Youtube");
@@ -544,6 +558,8 @@ namespace Course_API.Migrations
                     b.HasIndex("InstitudeFlagId");
 
                     b.HasIndex("InstituteTypeId");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("Institute");
                 });
@@ -620,92 +636,6 @@ namespace Course_API.Migrations
                     b.ToTable("OrganizerStatus");
                 });
 
-            modelBuilder.Entity("Course_API.Models.Trainee", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<int>("AccessFailedCount");
-
-                    b.Property<int>("ActiveStatusId");
-
-                    b.Property<int>("Age");
-
-                    b.Property<int>("CityId");
-
-                    b.Property<string>("ConcurrencyStamp")
-                        .IsConcurrencyToken();
-
-                    b.Property<string>("ContactNumber");
-
-                    b.Property<int>("CountryId");
-
-                    b.Property<string>("DeviceToken");
-
-                    b.Property<bool>("Disable");
-
-                    b.Property<int?>("DisableTypeId");
-
-                    b.Property<string>("Email")
-                        .HasMaxLength(256);
-
-                    b.Property<bool>("EmailConfirmed");
-
-                    b.Property<string>("Gender");
-
-                    b.Property<bool>("LockoutEnabled");
-
-                    b.Property<DateTimeOffset?>("LockoutEnd");
-
-                    b.Property<string>("Name");
-
-                    b.Property<int?>("NationalityId");
-
-                    b.Property<string>("NormalizedEmail")
-                        .HasMaxLength(256);
-
-                    b.Property<string>("NormalizedUserName")
-                        .HasMaxLength(256);
-
-                    b.Property<string>("PasswordHash");
-
-                    b.Property<string>("PhoneNumber");
-
-                    b.Property<bool>("PhoneNumberConfirmed");
-
-                    b.Property<int>("PinCode");
-
-                    b.Property<DateTime?>("PinCodeExpiration");
-
-                    b.Property<string>("SecurityStamp");
-
-                    b.Property<bool>("TwoFactorEnabled");
-
-                    b.Property<string>("UserName")
-                        .HasMaxLength(256);
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ActiveStatusId");
-
-                    b.HasIndex("CityId");
-
-                    b.HasIndex("CountryId");
-
-                    b.HasIndex("DisableTypeId");
-
-                    b.HasIndex("NationalityId");
-
-                    b.HasIndex("NormalizedEmail")
-                        .HasName("EmailIndex");
-
-                    b.HasIndex("NormalizedUserName")
-                        .IsUnique()
-                        .HasName("UserNameIndex");
-
-                    b.ToTable("Trainee");
-                });
-
             modelBuilder.Entity("Course_API.Models.TrainerModels.Nationality", b =>
                 {
                     b.Property<int>("Id")
@@ -747,6 +677,8 @@ namespace Course_API.Migrations
 
                     b.Property<string>("Instagram");
 
+                    b.Property<int>("InstituteId");
+
                     b.Property<double>("Lat");
 
                     b.Property<double>("Lng");
@@ -782,6 +714,8 @@ namespace Course_API.Migrations
                     b.HasIndex("CityId");
 
                     b.HasIndex("CountryId");
+
+                    b.HasIndex("InstituteId");
 
                     b.HasIndex("TrainerFlagId");
 
@@ -830,6 +764,94 @@ namespace Course_API.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("TrainerTitle");
+                });
+
+            modelBuilder.Entity("Course_API.Models.User", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<int>("AccessFailedCount");
+
+                    b.Property<int>("ActiveStatusId");
+
+                    b.Property<int>("Age");
+
+                    b.Property<int?>("CityId");
+
+                    b.Property<string>("ConcurrencyStamp")
+                        .IsConcurrencyToken();
+
+                    b.Property<string>("ContactNumber");
+
+                    b.Property<int?>("CountryId");
+
+                    b.Property<string>("DeviceToken");
+
+                    b.Property<bool>("Disable");
+
+                    b.Property<int?>("DisableTypeId");
+
+                    b.Property<string>("Email")
+                        .HasMaxLength(256);
+
+                    b.Property<bool>("EmailConfirmed");
+
+                    b.Property<string>("Gender");
+
+                    b.Property<bool>("LockoutEnabled");
+
+                    b.Property<DateTimeOffset?>("LockoutEnd");
+
+                    b.Property<string>("Name");
+
+                    b.Property<int?>("NationalityId");
+
+                    b.Property<string>("NormalizedEmail")
+                        .HasMaxLength(256);
+
+                    b.Property<string>("NormalizedUserName")
+                        .HasMaxLength(256);
+
+                    b.Property<string>("PasswordHash");
+
+                    b.Property<string>("PhoneNumber");
+
+                    b.Property<bool>("PhoneNumberConfirmed");
+
+                    b.Property<int?>("PinCode");
+
+                    b.Property<DateTime?>("PinCodeExpiration");
+
+                    b.Property<int>("Role");
+
+                    b.Property<string>("SecurityStamp");
+
+                    b.Property<bool>("TwoFactorEnabled");
+
+                    b.Property<string>("UserName")
+                        .HasMaxLength(256);
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ActiveStatusId");
+
+                    b.HasIndex("CityId");
+
+                    b.HasIndex("CountryId");
+
+                    b.HasIndex("DisableTypeId");
+
+                    b.HasIndex("NationalityId");
+
+                    b.HasIndex("NormalizedEmail")
+                        .HasName("EmailIndex");
+
+                    b.HasIndex("NormalizedUserName")
+                        .IsUnique()
+                        .HasName("UserNameIndex");
+
+                    b.ToTable("Trainee");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.EntityFrameworkCore.IdentityRole<int>", b =>
@@ -1001,8 +1023,7 @@ namespace Course_API.Migrations
 
                     b.HasOne("Course_API.Models.Organizer", "Organizer")
                         .WithMany()
-                        .HasForeignKey("OrganizerId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .HasForeignKey("OrganizerId");
                 });
 
             modelBuilder.Entity("Course_API.Models.DatabaseModels.Favorite", b =>
@@ -1011,14 +1032,18 @@ namespace Course_API.Migrations
                         .WithMany("CourseFavorite")
                         .HasForeignKey("CourseId");
 
-                    b.HasOne("Course_API.Models.Trainee")
+                    b.HasOne("Course_API.Models.User")
                         .WithMany("CourseFavorite")
-                        .HasForeignKey("TraineeId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .HasForeignKey("UserId");
                 });
 
             modelBuilder.Entity("Course_API.Models.DatabaseModels.RelianceModels.Reliance", b =>
                 {
+                    b.HasOne("Course_API.Models.Institute", "Institute")
+                        .WithMany("Reliance")
+                        .HasForeignKey("InstituteId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
                     b.HasOne("Course_API.Models.DatabaseModels.RelianceModels.RelianceStatus", "RelianceStatus")
                         .WithMany()
                         .HasForeignKey("RelianceStatusId")
@@ -1033,7 +1058,7 @@ namespace Course_API.Migrations
                         .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("Course_API.Models.DatabaseModels.RelianceModels.Reliance", "Reliance")
-                        .WithMany("CourRel")
+                        .WithMany()
                         .HasForeignKey("RelianceId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
@@ -1085,6 +1110,10 @@ namespace Course_API.Migrations
                         .WithMany()
                         .HasForeignKey("InstituteTypeId")
                         .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("Course_API.Models.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId");
                 });
 
             modelBuilder.Entity("Course_API.Models.Organizer", b =>
@@ -1105,32 +1134,6 @@ namespace Course_API.Migrations
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
-            modelBuilder.Entity("Course_API.Models.Trainee", b =>
-                {
-                    b.HasOne("Course_API.Models.ActiveStatus", "ActiveStatus")
-                        .WithMany()
-                        .HasForeignKey("ActiveStatusId")
-                        .OnDelete(DeleteBehavior.Cascade);
-
-                    b.HasOne("Course_API.Models.City", "City")
-                        .WithMany()
-                        .HasForeignKey("CityId")
-                        .OnDelete(DeleteBehavior.Cascade);
-
-                    b.HasOne("Course_API.Models.Country", "Country")
-                        .WithMany()
-                        .HasForeignKey("CountryId")
-                        .OnDelete(DeleteBehavior.Cascade);
-
-                    b.HasOne("Course_API.Models.DisableType", "DisableType")
-                        .WithMany()
-                        .HasForeignKey("DisableTypeId");
-
-                    b.HasOne("Course_API.Models.TrainerModels.Nationality", "Nationality")
-                        .WithMany()
-                        .HasForeignKey("NationalityId");
-                });
-
             modelBuilder.Entity("Course_API.Models.TrainerModels.Trainer", b =>
                 {
                     b.HasOne("Course_API.Models.City", "City")
@@ -1140,6 +1143,11 @@ namespace Course_API.Migrations
                     b.HasOne("Course_API.Models.Country", "Country")
                         .WithMany()
                         .HasForeignKey("CountryId");
+
+                    b.HasOne("Course_API.Models.Institute", "Institute")
+                        .WithMany("Trainer")
+                        .HasForeignKey("InstituteId")
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("Course_API.Models.TrainerModels.TrainerFlag", "TrainerFlag")
                         .WithMany()
@@ -1162,6 +1170,30 @@ namespace Course_API.Migrations
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
+            modelBuilder.Entity("Course_API.Models.User", b =>
+                {
+                    b.HasOne("Course_API.Models.ActiveStatus", "ActiveStatus")
+                        .WithMany()
+                        .HasForeignKey("ActiveStatusId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("Course_API.Models.City", "City")
+                        .WithMany()
+                        .HasForeignKey("CityId");
+
+                    b.HasOne("Course_API.Models.Country", "Country")
+                        .WithMany()
+                        .HasForeignKey("CountryId");
+
+                    b.HasOne("Course_API.Models.DisableType", "DisableType")
+                        .WithMany()
+                        .HasForeignKey("DisableTypeId");
+
+                    b.HasOne("Course_API.Models.TrainerModels.Nationality", "Nationality")
+                        .WithMany()
+                        .HasForeignKey("NationalityId");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.EntityFrameworkCore.IdentityRoleClaim<int>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.EntityFrameworkCore.IdentityRole<int>")
@@ -1172,7 +1204,7 @@ namespace Course_API.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.EntityFrameworkCore.IdentityUserClaim<int>", b =>
                 {
-                    b.HasOne("Course_API.Models.Trainee")
+                    b.HasOne("Course_API.Models.User")
                         .WithMany("Claims")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade);
@@ -1180,7 +1212,7 @@ namespace Course_API.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.EntityFrameworkCore.IdentityUserLogin<int>", b =>
                 {
-                    b.HasOne("Course_API.Models.Trainee")
+                    b.HasOne("Course_API.Models.User")
                         .WithMany("Logins")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade);
@@ -1193,7 +1225,7 @@ namespace Course_API.Migrations
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade);
 
-                    b.HasOne("Course_API.Models.Trainee")
+                    b.HasOne("Course_API.Models.User")
                         .WithMany("Roles")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade);

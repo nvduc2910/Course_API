@@ -2,13 +2,16 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using Course_API.CustomAttribute;
 using Course_API.Helpers;
 using Course_API.Infrastructures;
 using Course_API.Models;
 using Course_API.Models.BindingModels;
+using Course_API.Models.BindingModels.Course;
 using Course_API.Models.DatabaseModels;
 using Course_API.Models.DatabaseModels.CourseModels;
+using Course_API.Models.DatabaseModels.RelModels;
 using Course_API.Models.ReturnModels.CourseReturnModels;
 using Course_API.Options;
 using Course_API.Providers;
@@ -16,6 +19,7 @@ using Course_API.Repository;
 using Course_API.Resources;
 using Course_API.TaskSchedules;
 using FluentScheduler;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -29,24 +33,32 @@ namespace Course_API.Controllers
     [Route("api/[controller]/[Action]")]
     [ValidateModel]
     [HandleException]
+    [Authorize()]
     public class CourseController : BaseController
     {
         private readonly IEmailSender emailSender;
         private readonly EmailOptions emailOptions;
 
-        public CourseController(IUnitOfWork unitOfWork, UserManager<Trainee> userManager, IHttpContextAccessor httpCotext, IEmailSender emailSender,IOptions<EmailOptions> emailOptions) : base(unitOfWork, userManager, httpCotext)
+
+        #region Contructors
+
+        public CourseController(IUnitOfWork unitOfWork, UserManager<User> userManager, IHttpContextAccessor httpCotext, IEmailSender emailSender, IOptions<EmailOptions> emailOptions, IMapper mapper) : base(unitOfWork, userManager, httpCotext, mapper)
         {
             this.emailSender = emailSender;
             this.emailOptions = emailOptions.Value;
+
         }
 
+        #endregion
+
+        #region GetCourses
         [HttpGet]
         public IActionResult GetCourse(int page, int pageSize)
         {
             var lstCourseBrief = new List<CourseBriefReturnModel>();
 
             var courses = unitOfWork.GetRepository<Course>().Get().Skip((page - 1) * pageSize).Take(pageSize).ToList();
-            foreach(var item in courses)
+            foreach (var item in courses)
             {
                 var courseItemBrief = new CourseBriefReturnModel()
                 {
@@ -55,10 +67,35 @@ namespace Course_API.Controllers
                 };
                 lstCourseBrief.Add(courseItemBrief);
             }
-
             return ApiResponder.RespondSuccessTo(HttpStatusCode.Ok, lstCourseBrief);
         }
 
+        #endregion
+
+        #region GetInstitudeCourse
+        [HttpGet]
+        public IActionResult GetInstitudeCourse(int page, int pageSize)
+        {
+            var institude = unitOfWork.GetRepository<Institute>().Get(s => s.UserId == UserIdRequested()).FirstOrDefault();
+
+            var courses = unitOfWork.GetRepository<Course>().Get(s => s.InstituteId == institude.Id, null, "Institude").Skip((page - 1) * pageSize).Take(pageSize).ToList();
+            var totalCourseItem = unitOfWork.GetContext().Course.Where(s => s.InstituteId == institude.Id).Count();
+
+            var response = mapper.Map<List<Course>, List<CourseBriefReturnModel>>(courses);
+
+            var objectResponse = new
+            {
+                courses = response,
+                total = totalCourseItem,
+            };
+
+            return ApiResponder.RespondSuccessTo(HttpStatusCode.Ok, objectResponse);
+
+        }
+
+        #endregion
+
+        #region GetCourseCategory
 
         [HttpGet]
         public IActionResult GetCourseCategory()
@@ -68,6 +105,9 @@ namespace Course_API.Controllers
             return ApiResponder.RespondSuccessTo(HttpStatusCode.Ok, courseCategory);
         }
 
+        #endregion
+
+        #region GetCourseFlag
         [HttpGet]
         public IActionResult GetCourseFlag()
         {
@@ -75,7 +115,9 @@ namespace Course_API.Controllers
 
             return ApiResponder.RespondSuccessTo(HttpStatusCode.Ok, courseFlag);
         }
+        #endregion
 
+        #region GetCourseLanguage
 
         [HttpGet]
         public IActionResult GetCourseLanguage()
@@ -85,6 +127,11 @@ namespace Course_API.Controllers
             return ApiResponder.RespondSuccessTo(HttpStatusCode.Ok, courseLanguage);
         }
 
+        #endregion
+
+        #region GetCourseLevel
+
+
         [HttpGet]
         public IActionResult GetCourseLevel()
         {
@@ -92,8 +139,9 @@ namespace Course_API.Controllers
 
             return ApiResponder.RespondSuccessTo(HttpStatusCode.Ok, courseLevel);
         }
+        #endregion
 
-
+        #region GetCourseScope
         [HttpGet]
         public IActionResult GetCourseScope()
         {
@@ -101,8 +149,9 @@ namespace Course_API.Controllers
 
             return ApiResponder.RespondSuccessTo(HttpStatusCode.Ok, courseScope);
         }
+        #endregion
 
-
+        #region GetCourseStatus
         [HttpGet]
         public IActionResult GetCourseStatus()
         {
@@ -110,7 +159,9 @@ namespace Course_API.Controllers
 
             return ApiResponder.RespondSuccessTo(HttpStatusCode.Ok, courseStatus);
         }
+        #endregion
 
+        #region GetCourseType 
 
         [HttpGet]
         public IActionResult GetCourseType()
@@ -120,21 +171,20 @@ namespace Course_API.Controllers
             return ApiResponder.RespondSuccessTo(HttpStatusCode.Ok, courseType);
         }
 
+        #endregion
+
+        #region GetFeaturedCourse
 
         [HttpGet]
         public IActionResult GetFeaturedCourse(int page, int pageSize)
         {
-            var courses = unitOfWork.GetRepository<Course>().Get(null,null,"Organizer.Country.City,Institude,Currency").Skip((page - 1) * pageSize).Take(pageSize).ToList();
+            var courses = unitOfWork.GetRepository<Course>().Get(null, null, "Organizer.Country.City,Institude,Currency").Skip((page - 1) * pageSize).Take(pageSize).ToList();
 
             var lstCoursesBriefDetails = new List<CourseDetailsBriefReturnModel>();
 
-            foreach(var item in courses)
+            foreach (var item in courses)
             {
-                //foreach(var dayType in item.DayType)
-                //{
-                //    if(dayType == )
-                //}
-                
+
                 var totalDay = (item.EndDate - item.StartDate).TotalDays;
                 var coureseBriefDetailsItem = new CourseDetailsBriefReturnModel()
                 {
@@ -159,14 +209,45 @@ namespace Course_API.Controllers
             return ApiResponder.RespondSuccessTo(HttpStatusCode.Ok, lstCoursesBriefDetails);
         }
 
+        #endregion
+
+        #region CreateCourse
+
         [HttpPost]
-        public async Task<IActionResult> CreateCourse([FromBody] Course course)
+        public async Task<IActionResult> CreateCourse([FromBody] CourseDTO course)
         {
-            var courseInserted = await unitOfWork.GetRepository<Course>().InsertAsync(course);
+            var institude = unitOfWork.GetRepository<Institute>().Get(s => s.UserId == UserIdRequested()).FirstOrDefault();
+
+            var dataInsert = mapper.Map<CourseDTO, Course>(course);
+            dataInsert.InstituteId = institude.Id;
+            var courseInserted = await unitOfWork.GetRepository<Course>().InsertAsync(dataInsert);
+
+            //foreach (var item in course.Trainers)
+            //{
+            //    var courseTrainerItem = new CourTra()
+            //    {
+            //        CourseId = courseInserted.Id,
+            //        TrainerId = item,
+            //    };
+            //    await unitOfWork.GetRepository<CourTra>().InsertAsync(courseTrainerItem);
+            //}
+
+            //foreach (var item in course.Reliances)
+            //{
+            //    var courseRelianceItem = new CourRel()
+            //    {
+            //        CourseId = courseInserted.Id,
+            //        RelianceId = item,
+            //    };
+            //    await unitOfWork.GetRepository<CourRel>().InsertAsync(courseRelianceItem);
+            //}
 
             return ApiResponder.RespondSuccessTo(HttpStatusCode.Ok, courseInserted);
         }
 
+        #endregion
+
+        #region GetCourseDetails
 
         [HttpGet]
         public IActionResult GetCourseDetails(int courseId)
@@ -174,68 +255,164 @@ namespace Course_API.Controllers
             var course = unitOfWork.GetRepository<Course>().Get(s => s.Id == courseId, null, "Institude,Currency,Organizer.Country.City,CourTra.Trainer.TrainerNationality,CourRel.Reliance,CourseDayType,CourseType").FirstOrDefault();
 
             if (course == null)
-
                 return ApiResponder.RespondFailureTo(HttpStatusCode.Ok, "Product not found", ErrorCodes.ProductNotFound);
 
-            var courseReturn = new CourseDetailsReturnModel()
-            {
-                Id = course.Id,
-                InstituteId = course.Institude.Id,
-                InstituteName = course.Institude.Name,
-                Gender = course.Gender,
-                Name = course.Name,
-                StartDate = course.StartDate,
-                Country = course.Organizer.Country.Name,
-                City = course.Organizer.City.Name,
-                MainPrice = course.MainPrice.ToString() + course.Currency.Name,
-                MoviationPrice = course.MotivationPrice.ToString() + course.Currency.Name,
-                Image = course.Image,
-                Description = course.Description,
-                Address = course.Address,
-                Lat = course.Lat,
-                RegisterLink = course.RegisterLink,
-                Lng = course.Long,
-                CourseType = course.CourseType?.Type,
 
-                Contact = new CourseDetailsReturnModel.CourseContactReturnModel()
-                {
-                    ContactNumber = course.Institude.TelePhoneNumber,
-                    Email = course.Institude.Email,
-                    Facebook = course.Institude.Facebook,
-                    Twitter = course.Institude.Twitter,
-                    Instagram = course.Institude.Instagram,
-                },
-                Trainer = new List<CourseDetailsReturnModel.CourseTrainerReturnModel>(),
-                Reliance = new List<CourseDetailsReturnModel.CourseRelianceReturnModel>(),
-
-            };
-
-            foreach(var item in course.CourTra)
-            {
-                var courseTrainerReturn = new CourseTrainerReturnModel()
-                {
-                    Id = item.Trainer.Id,
-                    Avatar = item.Trainer.Logo,
-                    Name = item.Trainer.Name,
-                    Major = item.Trainer.Major,
-                };
-
-                courseReturn.Trainer.Add(courseTrainerReturn);
-            }
-
-            foreach(var item in course.CourRel)
-            {
-                var courseRelianceReturn = new CourseRelianceReturnModel()
-                {
-                    Id = item.Reliance.Id,
-                    Logo = item.Reliance.Logo,
-                };
-                courseReturn.Reliance.Add(courseRelianceReturn);
-            }
-
-            return ApiResponder.RespondSuccessTo(HttpStatusCode.Ok, courseReturn);
+            var data = mapper.Map<Course, CourseDetailsReturnModel>(course);
+            return ApiResponder.RespondSuccessTo(HttpStatusCode.Ok, data);
 
         }
+        #endregion
+
+        #region DeleteCourse
+        [HttpDelete]
+        public async Task<IActionResult> DeleteCourse(int courseId)
+        {
+            var course = unitOfWork.GetRepository<Course>().Get(s => s.Id == courseId, null, "Institude,Currency,Organizer.Country.City,CourTra.Trainer.TrainerNationality,CourRel.Reliance,CourseDayType,CourseType").FirstOrDefault();
+
+            if (course == null)
+                return ApiResponder.RespondFailureTo(HttpStatusCode.Ok, "Product not found", ErrorCodes.ProductNotFound);
+
+            foreach (var item in course.CourRel)
+            {
+                await unitOfWork.GetRepository<CourRel>().DeleteAsync(item);
+            }
+
+            foreach (var item in course.CourTra)
+            {
+                await unitOfWork.GetRepository<CourTra>().DeleteAsync(item);
+            }
+            foreach (var item in course.CourseDayType)
+            {
+                await unitOfWork.GetRepository<CourseDayType>().DeleteAsync(item);
+            }
+            foreach (var item in course.CourseFavorite)
+            {
+                await unitOfWork.GetRepository<Favorite>().DeleteAsync(item);
+            }
+
+            await unitOfWork.GetRepository<Course>().DeleteAsync(course);
+
+            return ApiResponder.RespondSuccessTo(HttpStatusCode.Ok, "Deleted");
+        }
+
+        #endregion
+
+        #region GetCourseWaitingAppove
+        [HttpGet]
+        public IActionResult GetCourseWaitingAppove(int page, int pageSize)
+        {
+            var courses = unitOfWork.GetRepository<Course>().Get(s => s.IsApproved == false, null, "Institude").Skip((page - 1) * pageSize).Take(pageSize).ToList();
+            var totalCourseItem = unitOfWork.GetContext().Course.Where(s => s.IsApproved == false).Count();
+
+            var response = mapper.Map<List<Course>, List<CourseBriefReturnModel>>(courses);
+
+            var objectResponse = new
+            {
+                courses = response,
+                total = totalCourseItem,
+            };
+            return ApiResponder.RespondSuccessTo(HttpStatusCode.Ok, objectResponse);
+        }
+
+        #endregion
+
+        #region ApproveCourse
+        [HttpPut]
+        public async Task<IActionResult> ApproveCourse(int courseId)
+        {
+            var course = unitOfWork.GetRepository<Course>().Get(s => s.Id == courseId, null, "Institude,Currency,Organizer.Country.City,CourTra.Trainer.TrainerNationality,CourRel.Reliance,CourseDayType,CourseType").FirstOrDefault();
+
+            if (course == null)
+                return ApiResponder.RespondFailureTo(HttpStatusCode.Ok, "Product not found", ErrorCodes.ProductNotFound);
+
+            course.IsApproved = true;
+
+            await unitOfWork.GetRepository<Course>().UpdateAsync(course);
+
+            return ApiResponder.RespondSuccessTo(HttpStatusCode.Ok, "Approved");
+        }
+
+        #endregion
+
+        #region RejectCourse
+        [HttpPut]
+        public async Task<IActionResult> RejectCourse(int courseId)
+        {
+            var course = unitOfWork.GetRepository<Course>().Get(s => s.Id == courseId, null, "Institude,Currency,Organizer.Country.City,CourTra.Trainer.TrainerNationality,CourRel.Reliance,CourseDayType,CourseType").FirstOrDefault();
+
+            if (course == null)
+                return ApiResponder.RespondFailureTo(HttpStatusCode.Ok, "Product not found", ErrorCodes.ProductNotFound);
+
+            course.IsApproved = false;
+
+            await unitOfWork.GetRepository<Course>().UpdateAsync(course);
+
+            return ApiResponder.RespondSuccessTo(HttpStatusCode.Ok, "Rejected");
+        }
+
+        #endregion
+
+        #region UpdateCourse
+        [HttpPut]
+        public async Task<IActionResult> UpdateCourse([FromBody] CourseDTO courseDTO, int courseId)
+        {
+            var course = unitOfWork.GetRepository<Course>().Get(s => s.Id == courseId, null, "CourTra,CourRel").FirstOrDefault();
+            var dataInsert = mapper.Map<CourseDTO, Course>(courseDTO, course);
+
+            //////delete old trainer
+
+            //if (course.CourTra != null)
+            //{
+            //    foreach (var item in course.CourTra)
+            //    {
+            //        await unitOfWork.GetRepository<CourTra>().DeleteAsync(item);
+            //    }
+            //}
+
+            ////add new trainer
+
+            //foreach(var item in courseDTO.Trainers)
+            //{
+            //    var courseTrainerItem = new CourTra()
+            //    {
+            //        CourseId = course.Id,
+            //        TrainerId = item,
+            //    };
+            //    await unitOfWork.GetRepository<CourTra>().InsertAsync(courseTrainerItem);
+            //}
+
+            ////delete old reliances
+            //if (course.CourRel != null)
+            //{
+            //    foreach (var item in course.CourRel)
+            //    {
+            //        await unitOfWork.GetRepository<CourRel>().DeleteAsync(item);
+            //    }
+            //}
+
+            ////add new reliances
+
+            //foreach(var item in courseDTO.Reliances)
+            //{
+            //    var courseRelianceItem = new CourRel()
+            //    {
+            //        CourseId = course.Id,
+            //        RelianceId = item,
+            //    };
+            //    await unitOfWork.GetRepository<CourRel>().InsertAsync(courseRelianceItem);
+            //}
+
+            await unitOfWork.GetRepository<Course>().UpdateAsync(dataInsert);
+
+            return ApiResponder.RespondSuccessTo(HttpStatusCode.Ok, "Updated");
+
+        }
+
+        #endregion
+
+
+        #region SetupFavorite
 
         [HttpPost]
         public async Task<IActionResult> SetupFavorite([FromBody]FavoriteBindModel favoriteModel)
@@ -245,7 +422,7 @@ namespace Course_API.Controllers
 
             var courseFavor = new Favorite()
             {
-               
+
                 CityId = favoriteModel.CityId,
                 CourseScopeId = favoriteModel.CourseScopeId,
                 CourseTypeId = favoriteModel.CourseTypeId,
@@ -256,7 +433,7 @@ namespace Course_API.Controllers
             if (favoriteInserted == null)
                 await unitOfWork.GetRepository<Favorite>().InsertAsync(courseFavor);
 
-            else 
+            else
             {
                 favoriteInserted.CityId = favoriteModel.CityId;
                 favoriteInserted.CourseTypeId = favoriteModel.CourseTypeId;
@@ -299,6 +476,9 @@ namespace Course_API.Controllers
             return ApiResponder.RespondSuccessTo(HttpStatusCode.Ok, lstCoursesBriefDetails);
         }
 
+        #endregion
+
+        #region GetFavorite
 
         [HttpGet]
         public IActionResult GetFavorite()
@@ -338,7 +518,9 @@ namespace Course_API.Controllers
 
             return ApiResponder.RespondSuccessTo(HttpStatusCode.Ok, lstCoursesBriefDetails);
         }
+        #endregion
 
+        #region Reminder
 
         [HttpPost]
         public IActionResult Reminder(int courseId, int day)
@@ -346,17 +528,19 @@ namespace Course_API.Controllers
 
             var userId = Convert.ToInt32(userManager.GetUserId(User));
 
-            var user = unitOfWork.GetRepository<Trainee>().Get(s => s.Id == userId).FirstOrDefault();
+            var user = unitOfWork.GetRepository<User>().Get(s => s.Id == userId).FirstOrDefault();
 
             var course = unitOfWork.GetRepository<Course>().Get(s => s.Id == courseId).FirstOrDefault();
 
             var jobRegistry = new JobRegistry(user.Email, course.Name, course + "is going start", course.StartDate.AddDays(-day), this.emailOptions);
-            JobManager.Initialize(new JobRegistry(user.Email, course.Name, course + "is going start",course.StartDate.AddDays(-day), this.emailOptions));
+            JobManager.Initialize(new JobRegistry(user.Email, course.Name, course + "is going start", course.StartDate.AddDays(-day), this.emailOptions));
 
             return ApiResponder.RespondSuccessTo(HttpStatusCode.Ok, "OK");
         }
-        
-    
+
+        #endregion
+
+        #region SearchCourse
         [HttpPost]
         public IActionResult SearchCourse([FromBody]FavoriteBindModel favoriteModel)
         {
@@ -393,5 +577,8 @@ namespace Course_API.Controllers
 
             return ApiResponder.RespondSuccessTo(HttpStatusCode.Ok, lstCoursesBriefDetails);
         }
+
+        #endregion
     }
 }
+
